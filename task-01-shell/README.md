@@ -58,3 +58,33 @@ Getting to Know the Shell
     - E.g. what is it directly after rebooting the board, what is it after reading the temperature.
     - Note: RIOT only measures the *worst case* stack consumption, not the *current* stack consumption.
     - Why is the worst case stack consumption more interesting?
+
+Answers
+=======================
+Getting to Know Your Board:
+--------------------------
+1. Yes, The board has an integrated programmer/debugger called SEGGER J-Link.
+2. Yes, SEGGER J-Link is used to debug and program.
+3. Yes, it has onboard  4 UART pins(RTS, TXD, CTS, RXD) to connect Virtual COM ports over USB.
+4. 64 MHz Cortex-M4 with FPU
+    - Arm Cortex-M4
+    - Armv7-M Architecture
+    - 64 MHZ
+    - 1 MB Flash, 256 KB RAM
+5. No, it has not capabilities such as Ethernet or Wi-Fi but it has protocol support for Bluetooth LE, Bluetooth mesh, Thread, Zigbee, 802.15.4, ANT and 2.4 GHz proprietary stacks.
+    - Wired
+    - (answer is above)
+6. It has user-programmable LEDs(4) and buttons(4)
+    - (answer is above)
+    - it has a Boot/Reset button.
+7. It has 5 Leds, 4 of which are programmable, 1 of is power led
+8. It has USB, GPIOs, NFC and SWF RF connectors. nRF52840 DK can be used as
+a shield for Arduino motherboards.
+9. nRF52840 SoC is supported UART, SPI, TWI, PDM, I2S and QSPI Interfaces.
+
+Getting to Know the Shell
+--------------------------
+1. `help` command
+2. `reboot`
+3. `version`
+4. It has a temperature sensor.
