@@ -12,6 +12,15 @@ static gpio_t buttons[] = { BTN0_PIN, BTN1_PIN, BTN2_PIN, BTN3_PIN };
 static gpio_mode_t button_modes[] = { BTN0_MODE, BTN1_MODE, BTN2_MODE, BTN3_MODE };
 static gpio_t leds[] = { LED0_PIN, LED1_PIN, LED2_PIN, LED3_PIN };
 
+
+char* threads[] = {"thread_b1", "thread_b2", "thread_b3", "thread_b4"};
+char thread_stack1[THREAD_STACKSIZE_MAIN];
+char thread_stack2[THREAD_STACKSIZE_MAIN];
+char thread_stack3[THREAD_STACKSIZE_MAIN];
+char thread_stack4[THREAD_STACKSIZE_MAIN];
+char* thread_stacks[] = {thread_stack1, thread_stack2, thread_stack3, thread_stack4};
+
+
 /* Note: LEDs are already initialized during in the board init function, but there is no harm
  * in doing so twice. This way the gpio_init() function can be showcased */
 static void init_gpios(void)
@@ -25,7 +34,7 @@ static void init_gpios(void)
     }
 }
 
-static void * check_button(void *_arg)
+void * check_button(void* _arg)
 {
     uintptr_t idx = (uintptr_t)_arg;
 
@@ -44,7 +53,17 @@ int main(void)
 
     init_gpios();
 
-    check_button((void *)0);
+    //for (unsigned int i = 0; i < 4; i++) {
+    //    thread_create(thread_stack, sizeof(thread_stack),
+    //              THREAD_PRIORITY_MAIN - 1, THREAD_CREATE_STACKTEST,
+    //              check_button, (void*)i, threads[i]);
+    //}
+
+    for (unsigned int i = 0; i < 4; i++) {
+        thread_create(thread_stacks[i], sizeof(thread_stack1),
+                  THREAD_PRIORITY_MAIN - 1, THREAD_CREATE_STACKTEST,
+                  check_button, (void*)i, threads[i]);
+    }
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     shell_run(NULL, line_buf, SHELL_DEFAULT_BUFSIZE);
