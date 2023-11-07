@@ -31,3 +31,24 @@ The program should:
 1. Toggle the corresponding LED whenever one of the four buttons is pushed down
 1. Releasing a button is ignored
 1. No additional threads should be launched and the main thread (and only thread) should be fully dedicated to running the shell (after doing some setup when starting)
+
+Answers
+=======================
+
+General Understanding
+---------------------
+
+1. IRQ: An interrupt request (IRQ) is a signal sent to a computer's processor to momentarily stop (interrupt) its operations.
+   ISR: ISR is a specific type of software routine or function associated with a specific interrupt condition.
+   Interrupt handler: Also known as ISR.
+   Thread context: Thread context is the current state of a thread and information associated with the thread.
+   Interrupt context: Interrupt context is when the interrupt occurs state goes to interrupt handler, and current process stops/saves until we complete interrupt.
+
+2. All sequential interrupts will be processed sequentially and interrupt requests is disabled while an interrupt is being processed. On the other Hand all nested interrupts may be assigned different priorities, so that
+whenever an interrupt occurs while an interrupt handler is running, will be compared first, then the further action will be determined according to the result.
+3. The stack usage of user tasks becomes unpredictable when you allow interrupt nesting.
+4. No, must be called in thread context.
+   Yes, it is safe to call this function from IRQ context.
+5. Edge-triggered interrupts are based on a specific transition or change in the interrupt signal's state(rising edge, falling edge). Level-triggered interrupts are based on the continuous state of the interrupt signal. The interrupt is recognized and serviced as long as the signal remains in the active state.
+6. I think both of them.
+7. It occurs when a button is pressed or released, and the electrical contacts inside the button make rapid, unintended, and multiple transitions between open and closed states.

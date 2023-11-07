@@ -17,7 +17,7 @@ static void on_button_pressed(void *_arg)
     uintptr_t idx = (uintptr_t)_arg;
 
     // FIXME: Add debouncing
-
+    // :(
     gpio_toggle(leds[idx]);
 }
 
@@ -28,10 +28,10 @@ static void init_gpios_and_irqs(void)
     }
 
     for (unsigned i = 0; i < ARRAY_SIZE(buttons); i++) {
-        gpio_init(buttons[i], button_modes[i]);
+        gpio_init_int(buttons[i], button_modes[i], GPIO_RISING, on_button_pressed, (void*)i);
         // FIXME: Don't execute on_button_pressed here, but from an ISR that is executed when
         // a rising edge on the GPIO buttons[i] is detected.
-        on_button_pressed((void *)i);
+        //on_button_pressed((void *)i);
     }
 }
 
