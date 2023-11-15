@@ -39,3 +39,27 @@ Add drivers and SAUL integrations to access the following hardware infos:
 
 You can either be creative when mapping the variant ID to something representable to SAUL or skip this in the SAUL integration.
 All other things have to be mapped to SAUL.
+
+Answers
+=======
+
+General Understanding
+---------------------
+
+1. 
+    - The keyword volatile does not guarantee a memory barrier to enforce cache-consistency. Therefore, the use of volatile alone is not sufficient to use a variable for inter-thread communication on all systems and processors.
+    - Correct. Non-volatile accesses can be reordered across volatile accesses.
+    - Incorrect. Volatile accesses are generally not reordered with respect to each other to maintain the order specified in the code.
+    - Correct but i am not sure. Volatile is a type qualifier in ‘C’ used with variables to instruct the compiler not to invoke any optimization on the variable operation.
+    - Incorrect. Volatile qualifier doesn't dictate the size of loads and stores.
+    - Incorrect. The volatile keyword eradicates visibility problems, but it does not deal with atomicity. 
+    - Incorrect. It doesn't provide atomicity or synchronization.
+    - Incorrect. Volatile is mainly used with memory-mapped registers to avoid compiler optimizations.
+    - Incorrect. Volatile has legitimate uses in multithreaded programming and memory-mapped I/O operations.
+    - Correct. It's a constant pointer to volatile data.
+    - Correct.
+2. 
+    - read(): Read a value (a set of values) from a device Simple sensors, as e.g. a temperature sensor, will return exactly one value together with the values scale and unit(saul_read_t).
+    - write(): Write a value (a set of values) to a device Most sensors will probably just return -ENOTSUP, as writing values to a sensor is often without purpose(saul_write_t).
+3.  MCU vendors often provide registers containing information about the MCU model. In nRF52840, there is INFO.PART register.
+4.
