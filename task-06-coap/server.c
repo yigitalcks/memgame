@@ -28,6 +28,8 @@
 #include "net/gcoap.h"
 #include "net/utils.h"
 #include "od.h"
+#include "saul.h"
+#include "saul_reg.h"
 
 #include "gcoap_example.h"
 
@@ -59,14 +61,27 @@ static const credman_credential_t credential = {
 static ssize_t _encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, coap_request_ctx_t *ctx);
+static ssize_t _saul_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, coap_request_ctx_t *ctx);
 
 /* CoAP resources. Must be sorted by path (ASCII order). */
 #ifndef MAX_RESOURCES
-#define MAX_RESOURCES   8
+#define MAX_RESOURCES   9
 #endif
 
+#define URI "/saul/"
+#define P(r) r
+#define URI_PATH(r) URI P(r)
+
 static coap_resource_t _resources[MAX_RESOURCES] = {
-    { "/riot/board", COAP_GET, _riot_board_handler, NULL },
+    { URI_PATH("0"), COAP_GET | COAP_PUT, _saul_handler, NULL },
+    { URI_PATH("1"), COAP_GET | COAP_PUT, _saul_handler, NULL },
+    { URI_PATH("2"), COAP_GET | COAP_PUT, _saul_handler, NULL },
+    { URI_PATH("3"), COAP_GET | COAP_PUT, _saul_handler, NULL },
+    { URI_PATH("4"), COAP_GET | COAP_PUT, _saul_handler, NULL },
+    { URI_PATH("5"), COAP_GET | COAP_PUT, _saul_handler, NULL },
+    { URI_PATH("6"), COAP_GET | COAP_PUT, _saul_handler, NULL },
+    { URI_PATH("7"), COAP_GET | COAP_PUT, _saul_handler, NULL },
+    {"/riot/board", COAP_GET, _riot_board_handler, NULL}
 };
 static const char *_link_params[MAX_RESOURCES] = {
     ";ct=0",
@@ -74,9 +89,12 @@ static const char *_link_params[MAX_RESOURCES] = {
 };
 
 static gcoap_listener_t _listener = {
-    .resources = _resources,
-    .resources_len = 1,
-    .link_encoder = _encode_link
+    &_resources[0],
+    ARRAY_SIZE(_resources),
+    GCOAP_SOCKET_TYPE_UNDEF,
+    _encode_link,
+    NULL,
+    NULL
 };
 
 /* Adds link format params to resource list */
@@ -113,6 +131,40 @@ static ssize_t _riot_board_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, co
         puts("gcoap_cli: msg buffer too small");
         return gcoap_response(pdu, buf, len, COAP_CODE_INTERNAL_SERVER_ERROR);
     }
+}
+
+static ssize_t _saul_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, coap_request_ctx_t *ctx) {
+
+    unsigned method_flag = coap_method2flag(coap_get_code_detail(pdu));
+    phydat_t* data;
+
+    
+
+    /*
+    switch (method_flag) {
+        case COAP_GET:
+            gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
+            coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
+            size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+
+            // write the response buffer with the request count value 
+            resp_len += fmt_u16_dec((char *)pdu->payload, req_count);
+            return resp_len;
+
+        case COAP_PUT:
+            // convert the payload to an integer and update the internal
+               value 
+            if (pdu->payload_len <= 5) {
+                char payload[6] = { 0 };
+                memcpy(payload, (char *)pdu->payload, pdu->payload_len);
+                req_count = (uint16_t)strtoul(payload, NULL, 10);
+                return gcoap_response(pdu, buf, len, COAP_CODE_CHANGED);
+            }
+            else {
+                return gcoap_response(pdu, buf, len, COAP_CODE_BAD_REQUEST);
+            }
+    }
+    */
 }
 
 void server_init(void)
