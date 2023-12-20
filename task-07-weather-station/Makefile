@@ -10,5 +10,6 @@ USEMODULE += shell
 USEMODULE += shell_cmds_default
 USEMODULE += ps
 USEMODULE += saul_default
+USEMODULE += ztimer_msec
 
 include $(RIOTBASE)/Makefile.include
