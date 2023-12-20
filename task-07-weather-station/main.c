@@ -71,7 +71,7 @@ void *thread_func(void *arg)
             if (degree > 1900)
                 light_led(1, 50);
             else
-                light_from(1, 0);
+                light_led(1, 0);
             light_led(2, 0);
             light_led(3, 0);
         }
@@ -82,7 +82,7 @@ void *thread_func(void *arg)
             if (degree > 2100)
                 light_led(2, 50);
             else
-                light_from(2, 0);
+                light_led(2, 0);
             light_led(3, 0);
         }
         else if (degree < 2400)
@@ -93,7 +93,7 @@ void *thread_func(void *arg)
             if (degree > 2300)
                 light_led(3, 50);
             else
-                light_from(3, 0);
+                light_led(3, 0);
         }
         else
         {
@@ -102,7 +102,7 @@ void *thread_func(void *arg)
             light_led(2, 100);
             light_led(3, 100);
         }
-
+        
         ztimer_sleep(ZTIMER_MSEC, 1000);
     }
 
