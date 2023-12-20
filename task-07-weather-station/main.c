@@ -39,7 +39,7 @@ void light_led(int i, int val)
     data.val[0] = val;
     data.unit = UNIT_PERCENT;
 
-    saul_reg_write(saul_reg_find_nth(i), &data);
+    saul_reg_write(saul_reg_find_nth(4 + i), &data);
 }
 
 int get_degree(void)
