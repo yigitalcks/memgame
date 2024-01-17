@@ -11,5 +11,7 @@ USEMODULE += saul_default
 USEMODULE += shell
 USEMODULE += shell_cmds_default
 USEMODULE += ztimer_msec
+USEMODULE += ztimer_sec
+USEMODULE += prng_sha256prng
 
 include $(RIOTBASE)/Makefile.include
