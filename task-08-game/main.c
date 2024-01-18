@@ -2,18 +2,19 @@
 #include <stdlib.h>
 #include <string.h>
 #include <inttypes.h>
-#include <sys/time.h>
 
+#include "board.h"
 #include "periph/gpio.h"
 #include "kernel_defines.h"
-#include "thread.h"
 #include "shell.h"
+#include "thread.h"
 #include "ztimer.h"
 #include "random.h"
 
 #define MSG_QUEUE_SIZE 2
 
 static gpio_t buttons[] = { BTN0_PIN, BTN1_PIN, BTN2_PIN, BTN3_PIN };
+static gpio_mode_t button_modes[] = { BTN0_MODE, BTN1_MODE, BTN2_MODE, BTN3_MODE };
 static gpio_t leds[] = { LED0_PIN, LED1_PIN, LED2_PIN, LED3_PIN };
 
 char thread_stack[THREAD_STACKSIZE_LARGE];
@@ -23,11 +24,13 @@ kernel_pid_t main_pid;
 static void init_gpios(void)
 {
     for (unsigned i = 0; i < ARRAY_SIZE(buttons); i++) {
-        gpio_init(buttons[i], GPIO_IN);
+        if(gpio_init(buttons[i], button_modes[i]) < 0) {
+            puts("Initialization Error");
+        }
     }
 
     for (unsigned i = 0; i < ARRAY_SIZE(leds); i++) {
-        gpio_init(leds[i], GPIO_OD_PU);
+        gpio_init(leds[i], GPIO_OUT);
     }
 }
 static void set_pid(void) {
@@ -52,15 +55,17 @@ void* record_buttons(void* _arg)
             }
             break;
         }
+        ztimer_sleep(ZTIMER_MSEC, 100);
         for (int i = 0; i < 4; i++) {
+            ztimer_sleep(ZTIMER_MSEC, 1);
             inp = gpio_read(buttons[i]);
-            if(inp > 0) {
-                printf("%d ", i);
+            if(inp == 0) {
+                printf("%d ", i + 1);
                 records[c] = i + 1;
                 c++;
             }
         }
-        ztimer_sleep(ZTIMER_MSEC, 1);
+        
     }
 
     return NULL;
@@ -132,10 +137,7 @@ int test_level(int difficulty) {
     thread_create(thread_stack, sizeof(thread_stack), THREAD_PRIORITY_MAIN - 1, 
                     THREAD_CREATE_STACKTEST, record_buttons, (void*)difficulty, "Buttons push recorder");
     
-    ztimer_msg_receive_timeout(ZTIMER_MSEC, &msg, 3000);
-    
-
-    if(msg.content.ptr == NULL) {
+    if(ztimer_msg_receive_timeout(ZTIMER_MSEC, &msg, 3000) < 0) {
         puts("You are too late :(\n");
         return -1;
     }

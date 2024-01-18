@@ -6,9 +6,9 @@ PROGRAMMER ?= openocd
 DEVELHELP ?= 1
 QUIET ?= 1
 
-USEMODULE += ps
 USEMODULE += shell
 USEMODULE += shell_cmds_default
+USEMODULE += ps
 USEMODULE += ztimer_msec
 USEMODULE += ztimer_sec
 
