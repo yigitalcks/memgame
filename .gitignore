@@ -1,2 +1,2 @@
-.*
-task*
+.vscode
+/task*
